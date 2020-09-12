@@ -43,17 +43,20 @@ Auxiliar de entrenamiento para inspector de chatarra
 ### Technology Stack
 | Technology    | Version      |
 | ------------- | -------------|
-| Docker  | ##.##.##     |
-| Technology 2  | ##.##.##     |
-| Technology 3  | ##.##.##     |
+| Docker        | 2.3.0.4     |
+| Ionic         | 5.3.2    |
+| Angular       | 10.0.8 |
+| MongoDB       | 4.0.8 |
+| Heroku       | X.X.X |
+
 
 ### Management tools
 
 You should ask for access to this tools if you don't have it already:
 
-* [Github repo](https://github.com/)
-* [Backlog]()
-* [Heroku](https://crowdfront-staging.herokuapp.com/)
+* [Github repo](https://github.com/ProyectoIntegrador2018/entrenar-inspector-chatarra)
+* [Backlog](https://trello.com/b/yrQtGTkU/e103-wall-e-soft)
+* [Heroku]()
 * [Documentation](https://drive.com)
 
 ## Development
