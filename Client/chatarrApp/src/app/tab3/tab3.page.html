@@ -1,0 +1,51 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>
+      Ajustes
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+
+  <ion-card>
+    <ion-card-content>
+      <h2>Datos de configuración</h2>
+      <ion-input [(ngModel)]="serverAddress" placeholder="0.0.0.0"></ion-input>
+      
+      <ion-fab vertical="center" horizontal="end" slot="fixed">
+          <ion-fab-button size="small" (click)="addressConfig()" color="primary" title="Login">
+            <ion-icon name="checkmark"></ion-icon>
+          </ion-fab-button>
+      </ion-fab>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card [hidden]="loginBool">
+    <ion-card-content>
+        <h2>Iniciar Sesión</h2>
+        <ion-input [(ngModel)]="loginUsername" placeholder="Usuario"></ion-input>
+        <ion-input [(ngModel)]="loginPassword" placeholder="Contraseña" type="password"></ion-input>
+        
+        <ion-fab vertical="center" horizontal="end" slot="fixed">
+            <ion-fab-button size="small" (click)="login()" color="primary" title="Login">
+              <ion-icon name="log-in-outline"></ion-icon>
+            </ion-fab-button>
+        </ion-fab>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card [hidden]="logoutBool">
+    <ion-card-content>
+        <h2>Su cuenta</h2>
+        <p>Nombre: {{loginUsername}}</p>
+        
+        <ion-fab vertical="center" horizontal="end" slot="fixed">
+            <ion-fab-button size="small" (click)="logout()" color="primary" title="Login">
+              <ion-icon name="log-out-outline"></ion-icon>
+            </ion-fab-button>
+        </ion-fab>
+    </ion-card-content>
+  </ion-card>
+
+</ion-content>
