@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
-import { setServers } from 'dns';
+//import { setServers } from 'dns';
 
 @Component({
   selector: 'app-exam',

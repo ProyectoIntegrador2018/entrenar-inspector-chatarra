@@ -10,7 +10,10 @@ export class Tab3Page {
 
   loginBool: boolean = false;
   logoutBool: boolean = true;
+  
   loginUsername: any;
+  loginPassword: any;
+  serverAddress: any;
 
   constructor(public toastController: ToastController) {}
 
@@ -26,6 +29,7 @@ export class Tab3Page {
     this.sendToast('Se ha iniciado sesión.');
     this.loginBool = true;
     this.logoutBool = false;
+    console.log(this.loginUsername + ", " + this.loginPassword);
   }
 
   logout(){
@@ -36,6 +40,7 @@ export class Tab3Page {
 
   addressConfig(){
     this.sendToast('Se ha configurado la dirección del servidor.');
+    console.log(this.serverAddress);
   }
 
 }
