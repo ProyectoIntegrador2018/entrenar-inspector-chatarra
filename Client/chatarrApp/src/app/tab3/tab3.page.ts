@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { ToastController } from '@ionic/angular';
+import { AlertController } from '@ionic/angular';
 
 @Component({
   selector: 'app-tab3',
@@ -15,7 +16,7 @@ export class Tab3Page {
   loginPassword: any;
   serverAddress: any;
 
-  constructor(public toastController: ToastController) {}
+  constructor(public toastController: ToastController, public alertController: AlertController) {}
 
   async sendToast(toastMessage) {
     const toast = await this.toastController.create({
@@ -41,6 +42,16 @@ export class Tab3Page {
   addressConfig(){
     this.sendToast('Se ha configurado la dirección del servidor.');
     console.log(this.serverAddress);
+  }
+
+  async loginAlert() {
+    const alert = await this.alertController.create({
+      header: 'Error',
+      message: 'No se puede iniciar sesion en este momento.',
+      buttons: ['OK']
+    });
+
+    await alert.present();
   }
 
 }
