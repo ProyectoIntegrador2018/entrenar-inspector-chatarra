@@ -1,0 +1,29 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>
+      Resultados
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+
+  <ion-segment [(ngModel)]="resultsTime" (ionChange)="changeResults()">
+    <ion-segment-button value="week">
+      <ion-label>Semana</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="month">
+      <ion-label>Mes</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="previousMonth">
+      <ion-label>Mes Anterior</ion-label>
+    </ion-segment-button>
+  </ion-segment>
+
+  <ion-card *ngFor="let result of results">
+    <ion-card-content>
+      <h2>{{ result.name }}, {{ result.points }}</h2>
+    </ion-card-content>
+  </ion-card>
+  
+</ion-content>

@@ -1,0 +1,37 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>{{title}}</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button text="Regresar" defaultHref="/tabs/tab1" (click)="dismiss()"></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+
+  <ion-card [hidden]="showingResults">
+    <ion-card-header>
+      <ion-card-title style="text-align:center">{{currentNum}}/{{totalNum}}</ion-card-title>
+    </ion-card-header>
+  </ion-card>
+
+  <ion-card class="centerImage">
+    <ion-card-header>
+      <img src="{{currentImage}}">
+      <ion-card-title style="text-align:center">{{resultsString}}</ion-card-title>
+    </ion-card-header>
+  </ion-card>
+
+  <div [hidden]="showingResults">
+    <ion-row class="ion-justify-content-center">
+      <ion-button (click)="answer(0)">{{options[0]}}</ion-button>
+      <ion-button (click)="answer(1)">{{options[1]}}</ion-button>
+    </ion-row>
+    <ion-row class="ion-justify-content-center">
+      <ion-button (click)="answer(2)">{{options[2]}}</ion-button>
+      <ion-button (click)="answer(3)">{{options[3]}}</ion-button>
+    </ion-row>
+  </div>
+  
+ 
+</ion-content>
