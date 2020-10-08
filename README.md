@@ -63,29 +63,28 @@ You should ask for access to this tools if you don't have it already:
 
 ### Setup the project
 
-You'll definitely want to install [`plis`](https://github.com/IcaliaLabs/plis), as in this case will
+You'll definitely want to install [`Github repo`](https://github.com/ProyectoIntegrador2018/entrenar-inspector-chatarra), as in this case will
 let you bring up the containers needed for development. This is done by running the command
-`plis start`, which will start up the services in the `development` group (i.e. rails
-and sidekiq), along with their dependencies (posgres, redis, etc).
+`ng serve`, which will start up the services in the `development` group , along with their dependencies (ionic etc).
 
 After installing please you can follow this simple steps:
 
 1. Clone this repository into your local machine
 
 ```bash
-$ git clone git@github.com:IcaliaLabs/crowdfront.git
+$ git clone https://github.com/ProyectoIntegrador2018/entrenar-inspector-chatarra
 ```
 
 2. Fire up a terminal and run:
 
 ```bash
-$ plis run web bash
+$ ng serve
 ```
-
+(..pending)
 3. Inside the container you need to migrate the database:
 
-```
-% rails db:migrate
+```bash
+(..pending)
 ```
 
 ### Running the stack for Development
