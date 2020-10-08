@@ -8,10 +8,10 @@ Complemento al clasificador de chatarra desarrollado el año pasado para Ternium
 * [Environment URLS](#environment-urls)
 * [Da Team](#team)
 * [Technology Stack](#technology-stack)
-* [Management resources](#management-resources)
+* [Management Tools](#management-resources)
 * [Setup the project](#setup-the-project)
-* [Running the stack for development](#running-the-stack-for-development)
-* [Stop the project](#stop-the-project)
+* [Frontend setup](#frontend-setup)
+* [Backend setup](#backend-setup)
 * [Restoring the database](#restoring-the-database)
 * [Debugging](#debugging)
 * [Running specs](#running-specs)
@@ -78,6 +78,17 @@ $ git clone https://github.com/ProyectoIntegrador2018/entrenar-inspector-chatarr
 ```
 ### Frontend Setup
 
+1. Fire up a terminal and run:
+
+```bash
+$ cd Client/chatarrApp
+```
+
+2. Start the frontend using:
+
+```bash
+$ Ionic serve
+```
 
 ### Backend Setup
 
