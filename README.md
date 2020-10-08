@@ -1,6 +1,6 @@
-# Nombre del proyecto
+# chatarrApp
+Complemento al clasificador de chatarra desarrollado el año pasado para Ternium. La applicación sirve como una herramienta para auxiliar en el entrenamiento de los inspectores de chatarra.
 
-Auxiliar de entrenamiento para inspector de chatarra
 
 ## Table of contents
 
@@ -23,7 +23,6 @@ Auxiliar de entrenamiento para inspector de chatarra
 | Name               | Email             | Role |
 | ------------------ | ----------------- | ---- |
 | Marco Del Valle | MDELVALC@ternium.com.mx | Lider IT  |
-| Roberto Arredondo |  | Usuario Referente  |
 
 
 ### Environment URLS
@@ -63,75 +62,42 @@ You should ask for access to this tools if you don't have it already:
 
 ### Setup the project
 
-You'll definitely want to install [`plis`](https://github.com/IcaliaLabs/plis), as in this case will
-let you bring up the containers needed for development. This is done by running the command
-`plis start`, which will start up the services in the `development` group (i.e. rails
-and sidekiq), along with their dependencies (posgres, redis, etc).
+Before you start, you need to make sure both node and npm are installed in your machine.
+
+``` bash
+$ npm -v
+$ node -v
+```
 
 After installing please you can follow this simple steps:
 
 1. Clone this repository into your local machine
 
 ```bash
-$ git clone git@github.com:IcaliaLabs/crowdfront.git
+$ git clone https://github.com/ProyectoIntegrador2018/entrenar-inspector-chatarra
 ```
+### Frontend Setup
 
-2. Fire up a terminal and run:
 
-```bash
-$ plis run web bash
-```
-
-3. Inside the container you need to migrate the database:
-
-```
-% rails db:migrate
-```
-
-### Running the stack for Development
+### Backend Setup
 
 1. Fire up a terminal and run: 
 
-```
-plis start
-```
-
-That command will lift every service crowdfront needs, such as the `rails server`, `postgres`, and `redis`.
-
-
-It may take a while before you see anything, you can follow the logs of the containers with:
-
-```
-$ docker-compose logs
+```bash
+$ cd backend
 ```
 
-Once you see an output like this:
+2. Install dependencies:
 
-```
-web_1   | => Booting Puma
-web_1   | => Rails 5.1.3 application starting in development on http://0.0.0.0:3000
-web_1   | => Run `rails server -h` for more startup options
-web_1   | => Ctrl-C to shutdown server
-web_1   | Listening on 0.0.0.0:3000, CTRL+C to stop
+```bash
+$ npm install
 ```
 
-This means the project is up and running.
+3. Start the server using nodemon:
 
-### Stop the project
-
-In order to stop crowdfront as a whole you can run:
-
+```bash
+$ nodemon server
 ```
-% plis stop
-```
-
-This will stop every container, but if you need to stop one in particular, you can specify it like:
-
-```
-% plis stop web
-```
-
-`web` is the service name located on the `docker-compose.yml` file, there you can see the services name and stop each of them if you need to.
 
 ### Restoring the database
 
