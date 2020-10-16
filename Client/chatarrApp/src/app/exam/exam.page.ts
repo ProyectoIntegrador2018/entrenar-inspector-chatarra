@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ModalController } from '@ionic/angular';
+import { ModalController, AlertController } from '@ionic/angular';
 //import { setServers } from 'dns';
 
 @Component({
@@ -13,6 +13,8 @@ export class ExamPage implements OnInit {
   public title: string
 
   showingResults = false;
+  questionActive = true;
+  answerCard = "empty";
 
   correct = 0;
   resultsString = "";
@@ -32,7 +34,7 @@ export class ExamPage implements OnInit {
   currentImage = "";
   currentClass = "Tipo1";
 
-  constructor(public modalController: ModalController) { }
+  constructor(public modalController: ModalController, public alertController: AlertController) { }
 
   ionViewWillEnter(){
     if(this.practiceMode){
@@ -93,7 +95,7 @@ export class ExamPage implements OnInit {
   }
 
   setUpQuestion(){
-    console.log(this.possibleAnswers.length - 1);
+    //console.log(this.possibleAnswers.length - 1);
     this.currentImage = this.sets[this.currentNum - 1].image;
     this.currentClass = this.sets[this.currentNum - 1].class;
 
@@ -121,14 +123,30 @@ export class ExamPage implements OnInit {
     //check if option is correct, if so add to correct
     if(this.options[option] == this.currentClass){
       this.correct++;
+      this.answerCard = "Correcto, es " + this.currentClass;
     }
+    else{
+      this.answerCard = "Incorrecto, es " + this.currentClass;
+    }
+
+    this.showingResults = true;
+    this.questionActive = false;
+
+    //go to next question
+    //this.nextQuestion();
+    
+  }
+
+  nextQuestion(){
+    this.showingResults = false;
+    this.questionActive = true;
 
     if(this.currentNum <= this.totalNum){
       this.setUpQuestion();
     }
     else{
       this.showingResults = true;
-      console.log("REACHED END");
+      //console.log("REACHED END");
       this.currentNum--;
       this.currentImage = "";
       if(this.practiceMode == true){
@@ -143,6 +161,33 @@ export class ExamPage implements OnInit {
 
   dismiss(){
     this.modalController.dismiss();
+  }
+
+  async report(){
+    const alert = await this.alertController.create({
+      header: 'Reportar Pregunta',
+      inputs: [
+        {
+          name: 'mensaje',
+          type: 'text',
+          value: "Respuesta Correcta"
+        }
+      ],
+      buttons: [
+        {
+            text: 'Cancelar'
+        },
+        {
+            text: 'Reportar',
+            handler: data => {
+              console.log(this.currentNum - 1 + ", " + data.mensaje)
+              //enviar a servidor id y mensaje
+            }
+        }
+    ]
+    });
+
+    await alert.present();
   }
 
 }

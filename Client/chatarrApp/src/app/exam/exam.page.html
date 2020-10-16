@@ -32,6 +32,20 @@
       <ion-button (click)="answer(3)">{{options[3]}}</ion-button>
     </ion-row>
   </div>
+
+  <div [hidden]="questionActive">
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title style="text-align:center">{{answerCard}}</ion-card-title>
+      </ion-card-header>
+    </ion-card>
+    <ion-row class="ion-justify-content-center">
+      <ion-button (click)="nextQuestion()">Siguiente Pregunta</ion-button>
+    </ion-row>
+    <ion-row class="ion-justify-content-center">
+      <ion-button color="tertiary" (click)="report()">Reportar</ion-button>
+    </ion-row>
+  </div>
   
  
 </ion-content>
