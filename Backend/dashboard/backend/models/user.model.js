@@ -10,6 +10,7 @@ const userSchema = new Schema({
         trim: true,
         minlength: 6
     },
+    // Pending jwt token generation
     password: {
         type: String,
         required: true,
