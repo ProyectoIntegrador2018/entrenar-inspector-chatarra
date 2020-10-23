@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { ToastController } from '@ionic/angular';
 import { AlertController } from '@ionic/angular';
+import { HttpClient, HttpParams  } from '@angular/common/http';
 
 @Component({
   selector: 'app-tab3',
@@ -16,7 +17,7 @@ export class Tab3Page {
   loginPassword: any;
   serverAddress: any;
 
-  constructor(public toastController: ToastController, public alertController: AlertController) {}
+  constructor(private http: HttpClient, public toastController: ToastController, public alertController: AlertController) {}
 
   async sendToast(toastMessage) {
     const toast = await this.toastController.create({
@@ -27,6 +28,9 @@ export class Tab3Page {
   }
 
   login(){
+    this.http.get("https://chatarrapp-api.herokuapp.com/users").subscribe((response) => {
+      console.log(response);
+      });
     this.sendToast('Se ha iniciado sesión.');
     this.loginBool = true;
     this.logoutBool = false;

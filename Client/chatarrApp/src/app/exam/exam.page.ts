@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalController, AlertController } from '@ionic/angular';
+import { HttpClient, HttpParams  } from '@angular/common/http';
 //import { setServers } from 'dns';
 
 @Component({
@@ -23,20 +24,20 @@ export class ExamPage implements OnInit {
   //each set contains imageurl and classification, so .image and .class
 
   currentNum = 1;
-  totalNum = this.sets.length;
+  totalNum = 0;
 
   //possibleAnswers: string[] = [];
-  possibleAnswers = ["Tipo1", "Tipo2", "Tipo3", "Tipo4", "Tipo5", "Tipo6", "Tipo7"];
+  possibleAnswers = ["TYPEA", "TYPEB", "TYPEC", "TYPED", "TYPEE", "TYPEF", "TYPEG"];
   options = ["", "", "", ""];
 
   //apiURL = '';
 
   currentImage = "";
-  currentClass = "Tipo1";
+  currentClass = "TYPEA";
 
-  constructor(public modalController: ModalController, public alertController: AlertController) { }
+  constructor(private http: HttpClient, public modalController: ModalController, public alertController: AlertController) { }
 
-  ionViewWillEnter(){
+  async ionViewWillEnter(){
     if(this.practiceMode){
       this.title = "Práctica";
     }
@@ -44,7 +45,7 @@ export class ExamPage implements OnInit {
       this.title = "Examen";
     }
 
-    this.setUpTest();
+    await this.setUpTest();
     this.setUpQuestion();
 
     //get set from server
@@ -60,18 +61,16 @@ export class ExamPage implements OnInit {
   ngOnInit() {
   }
 
-  setUpTest(){
-    this.sets.push({
-      image: "https://www.ecoticias.com/userfiles/extra/JOFN_chatarraaceroalu.jpg",
-      class: "Tipo6"
-    })
-
-    this.sets.push({
-      image: "https://st.depositphotos.com/1010263/2955/i/450/depositphotos_29553943-stock-photo-scrap-metal-heap.jpg",
-      class: "Tipo3"
-    })
-
-    this.totalNum = this.sets.length;
+  async setUpTest(){
+    var exams = await this.http.get("https://chatarrapp-api.herokuapp.com/exams").toPromise();
+    for (var image of exams[2].images){
+      var imageInfo: any = await this.http.get("https://chatarrapp-api.herokuapp.com/images/" + image).toPromise();
+      this.sets.push({
+        image: imageInfo.imageURL,
+        class: imageInfo.classification
+      })
+      this.totalNum++;
+    }
   }
 
   //Obtained from https://github.com/Daplie/knuth-shuffle
@@ -96,8 +95,10 @@ export class ExamPage implements OnInit {
 
   setUpQuestion(){
     //console.log(this.possibleAnswers.length - 1);
+    console.log(this.sets);
+    console.log(this.totalNum);
     this.currentImage = this.sets[this.currentNum - 1].image;
-    this.currentClass = this.sets[this.currentNum - 1].class;
+    this.currentClass = this.sets[this.currentNum - 1].class.toUpperCase();
 
     //setup options
     this.options[0] = this.currentClass;
@@ -121,7 +122,7 @@ export class ExamPage implements OnInit {
     this.currentNum++;
 
     //check if option is correct, if so add to correct
-    if(this.options[option] == this.currentClass){
+    if(this.options[option].toUpperCase() == this.currentClass.toUpperCase()){
       this.correct++;
       this.answerCard = "Correcto, es " + this.currentClass;
     }
