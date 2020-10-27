@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalController, AlertController } from '@ionic/angular';
 import { HttpClient, HttpParams  } from '@angular/common/http';
+import { Storage } from '@ionic/storage';
 //import { setServers } from 'dns';
 
 @Component({
@@ -35,9 +36,18 @@ export class ExamPage implements OnInit {
   currentImage = "";
   currentClass = "TYPEA";
 
-  constructor(private http: HttpClient, public modalController: ModalController, public alertController: AlertController) { }
+  loginUsername = "";
+
+  constructor(private http: HttpClient, public modalController: ModalController, public alertController: AlertController, private storage: Storage) { }
 
   async ionViewWillEnter(){
+
+    this.storage.get('loginUsername').then((val) => {
+      if (val != "" && val != undefined){
+       this.loginUsername = val;
+      }
+    });
+
     if(this.practiceMode){
       this.title = "Práctica";
     }
@@ -65,8 +75,10 @@ export class ExamPage implements OnInit {
     var exams = await this.http.get("https://chatarrapp-api.herokuapp.com/exams").toPromise();
     for (var image of exams[2].images){
       var imageInfo: any = await this.http.get("https://chatarrapp-api.herokuapp.com/images/" + image).toPromise();
+      //console.log(imageInfo._id);
       this.sets.push({
         image: imageInfo.imageURL,
+        id: imageInfo._id,
         class: imageInfo.classification
       })
       this.totalNum++;
@@ -180,9 +192,11 @@ export class ExamPage implements OnInit {
         },
         {
             text: 'Reportar',
-            handler: data => {
+            handler: async data => {
               console.log(this.currentNum - 1 + ", " + data.mensaje)
               //enviar a servidor id y mensaje
+              var reportResult = await this.http.post("https://chatarrapp-api.herokuapp.com/reports/add", {username: this.loginUsername, report: data.mensaje, imageID: this.sets[this.currentNum - 1].id}).toPromise();
+              console.log(reportResult);
             }
         }
     ]
