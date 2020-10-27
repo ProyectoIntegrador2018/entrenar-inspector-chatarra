@@ -8,12 +8,15 @@ import { ExamPageRoutingModule } from './exam-routing.module';
 
 import { ExamPage } from './exam.page';
 
+import { IonicStorageModule } from '@ionic/storage';
+
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    ExamPageRoutingModule
+    ExamPageRoutingModule,
+    IonicStorageModule.forRoot()
   ],
   declarations: [ExamPage]
 })

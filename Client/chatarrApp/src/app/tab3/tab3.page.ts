@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { ToastController } from '@ionic/angular';
 import { AlertController } from '@ionic/angular';
+import { HttpClient, HttpParams  } from '@angular/common/http';
+import { Storage } from '@ionic/storage';
 
 @Component({
   selector: 'app-tab3',
@@ -16,7 +18,15 @@ export class Tab3Page {
   loginPassword: any;
   serverAddress: any;
 
-  constructor(public toastController: ToastController, public alertController: AlertController) {}
+  constructor(private http: HttpClient, public toastController: ToastController, public alertController: AlertController, private storage: Storage) {
+    this.storage.get('loginUsername').then((val) => {
+      if (val != "" && val != undefined){
+       this.loginUsername = val;
+       this.loginBool = true;
+       this.logoutBool = false;
+      }
+    });
+  }
 
   async sendToast(toastMessage) {
     const toast = await this.toastController.create({
@@ -26,15 +36,37 @@ export class Tab3Page {
     toast.present();
   }
 
-  login(){
-    this.sendToast('Se ha iniciado sesión.');
+  async login(){
+    /*
+    this.http.get("https://chatarrapp-api.herokuapp.com/users").subscribe((response) => {
+      console.log(response);
+      });
+    */
+    try{
+      let data = {
+        username: this.loginUsername,
+        password: this.loginPassword
+      }
+      var loginResult: any = await this.http.post("https://chatarrapp-api.herokuapp.com/users/login", {username: this.loginUsername, password: this.loginPassword}).toPromise();
+      //console.log(loginResult);
+    }
+    catch{
+      this.sendToast('Error al iniciar sesión.');
+    }
+    
+    this.sendToast('Se ha iniciado sesión. ' + loginResult.token);
+    this.storage.set('loginUsername', this.loginUsername);
+    this.storage.set('loginToken', loginResult.token);
     this.loginBool = true;
     this.logoutBool = false;
-    console.log(this.loginUsername + ", " + this.loginPassword);
+    //console.log(this.loginUsername + ", " + this.loginPassword);
+    //console.log(loginResult);
   }
 
   logout(){
     this.sendToast('Se ha cerrado sesión.');
+    this.storage.set('loginUsername', "");
+    this.storage.set('loginToken', "");
     this.loginBool = false;
     this.logoutBool = true;
   }
