@@ -6,16 +6,13 @@ Complemento al clasificador de chatarra desarrollado el año pasado para Ternium
 
 * [Client Details](#client-details)
 * [Environment URLS](#environment-urls)
-* [Da Team](#team)
+* [Da Team](#da-team)
 * [Technology Stack](#technology-stack)
-* [Management Tools](#management-resources)
+* [Management Tools](#management-tools)
 * [Setup the project](#setup-the-project)
 * [Frontend setup](#frontend-setup)
 * [Backend setup](#backend-setup)
-* [Restoring the database](#restoring-the-database)
-* [Debugging](#debugging)
-* [Running specs](#running-specs)
-* [Checking code for potential issues](#checking-code-for-potential-issues)
+* [Dashboard setup](#dashboard-setup)
 
 
 ### Client Details
@@ -45,6 +42,7 @@ Complemento al clasificador de chatarra desarrollado el año pasado para Ternium
 | Docker        | 2.3.0.4     |
 | Ionic         | 5.3.2    |
 | Angular       | 10.0.8 |
+| React         | 16.8.6 |
 | MongoDB       | 4.0.8 |
 | Heroku       | X.X.X |
 
@@ -110,84 +108,24 @@ $ npm install
 $ nodemon server
 ```
 
-### Restoring the database
+### Dashboard Setup
 
-You probably won't be working with a blank database, so once you are able to run crowdfront you can restore the database, to do it, first stop all services:
+1. Fire up a terminal and run: 
 
-```
-% plis stop
-```
-
-Then just lift up the `db` service:
-
-```
-% plis start db
+```bash
+$ cd dashboard
 ```
 
-The next step is to login to the database container:
+2. Install dependencies:
 
-```
-% docker exec -ti crowdfront_db_1 bash
-```
-
-This will open up a bash session in to the database container.
-
-Up to this point we just need to download a database dump and copy under `crowdfront/backups/`, this directory is mounted on the container, so you will be able to restore it with:
-
-```
-root@a3f695b39869:/# bin/restoredb crowdfront_dev db/backups/<databaseDump>
+```bash
+$ npm install
 ```
 
-If you want to see how this script works, you can find it under `bin/restoredb`
+3. Start the server using nodemon:
 
-Once the script finishes its execution you can just exit the session from the container and lift the other services:
-
-```
-% plis start
+```bash
+$ npm start
 ```
 
-### Debugging
 
-We know you love to use `debugger`, and who doesn't, and with Docker is a bit tricky, but don't worry, we have you covered.
-
-Just run this line at the terminal and you can start debugging like a pro:
-
-```
-% plis attach web
-```
-
-This will display the logs from the rails app, as well as give you access to stop the execution on the debugging point as you would expect.
-
-**Take note that if you kill this process you will kill the web service, and you will probably need to lift it up again.**
-
-### Running specs
-
-To run specs, you can do:
-
-```
-$ plis run test rspec
-```
-
-Or for a specific file:
-
-```
-$ plis run test rspec spec/models/user_spec.rb
-```
-
-### Checking code for potential issues
-
-To run specs, you can do:
-
-```
-$ plis run web reek
-```
-
-```
-$ plis run web rubocop
-```
-
-```
-$ plis run web scss_lint
-```
-
-Or any other linter you have.
