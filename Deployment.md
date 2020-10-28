@@ -18,7 +18,7 @@ Para descargar el proyecto, es necesario descargar el repositorio al directorio 
 ```bash
 $ git clone git@github.com:ProyectoIntegrador2018/entrenar-inspector-chatarra
 ```
-###Front-End
+### Front-End
 
 Despues de haberlo descargado, asegurese de entrar al directorio.
 ```bash
@@ -30,7 +30,7 @@ Ya dentro del directorio, se instalan todas las dependencias necesarias para el 
 $ npm install
 ```
 
-###Back-End
+### Back-End
 
 Despues de haberlo descargado, asegurese de entrar al directorio.
 ```bash
@@ -41,7 +41,7 @@ Ya dentro del directorio, se instalan todas las dependencias necesarias para el 
 ```bash
 $ npm install
 ```
-###Dashboard
+### Dashboard
 
 Despues de haberlo descargado, asegurese de entrar al directorio.
 ```bash
