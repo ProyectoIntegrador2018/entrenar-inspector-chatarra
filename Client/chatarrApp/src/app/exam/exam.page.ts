@@ -38,6 +38,8 @@ export class ExamPage implements OnInit {
 
   loginUsername = "";
 
+  currentExam: any;
+
   constructor(private http: HttpClient, public modalController: ModalController, public alertController: AlertController, private storage: Storage) { }
 
   async ionViewWillEnter(){
@@ -73,7 +75,9 @@ export class ExamPage implements OnInit {
 
   async setUpTest(){
     var exams = await this.http.get("https://chatarrapp-api.herokuapp.com/exams").toPromise();
-    for (var image of exams[2].images){
+    this.currentExam = exams[2];
+    console.log(this.currentExam);
+    for (var image of this.currentExam.images){
       var imageInfo: any = await this.http.get("https://chatarrapp-api.herokuapp.com/images/" + image).toPromise();
       //console.log(imageInfo._id);
       this.sets.push({
@@ -158,7 +162,12 @@ export class ExamPage implements OnInit {
       this.setUpQuestion();
     }
     else{
-      this.showingResults = true;
+      this.sendResults();
+    }
+  }
+
+  async sendResults(){
+    this.showingResults = true;
       //console.log("REACHED END");
       this.currentNum--;
       this.currentImage = "";
@@ -167,9 +176,10 @@ export class ExamPage implements OnInit {
       }
       else{
         //send results to server
+        var attemptResult = await this.http.post("https://chatarrapp-api.herokuapp.com/attempts/add", {username: this.loginUsername, exam: this.currentExam.examName, score: Math.floor((this.correct/this.totalNum)*100), date: new Date()}).toPromise();
+        console.log(attemptResult);
         this.resultsString = "Tu resultado es de " + this.correct + " de " + this.totalNum + ". Te invitamos a checar los resultados";
       }
-    }
   }
 
   dismiss(){
