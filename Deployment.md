@@ -66,22 +66,12 @@ Para poder conectar nuestro proyecto con Heroku, es necesario descargar [Heroku 
 $ heroku login
 ```
 
-Despues de habernos loggeado, tendremos que instalar las dependencias nuevamente, por si se hicieron nuevos cambios a las gemas utilizadas
-```bash
-$ bundle install
-```
 
 Ya teniendo configurado Heroku, podemos proceder a crear nuestro sitio web.
 
 ### Subir a Heroku
 
 **Hacer los suguientes pasos en caso de necesitar hostear la aplicacion en un nuevo dominio**
-
-Primero se hace login dentro del HerokuCLI
-
-```bash
-$ heroku login
-```
 
 Dentro del directorio del proyecto, se crea un sitio con Heroku de la siguiente manera:
 ```bash
