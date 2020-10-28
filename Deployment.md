@@ -1,6 +1,6 @@
-# Deployment de CarteleraI API
+# Deployment de ChatarrApp
 
-Este documento fue creado con la finalidad de facilitar el proceso de deployment para el proyecto de CarteleraI API. A continuación se muestran los pasos a seguir para lograrlo.
+Este documento fue creado con la finalidad de facilitar el proceso de deployment para el proyecto de ChatarrApp. A continuación se muestran los pasos a seguir para lograrlo.
 
 ### Requisitos
 
