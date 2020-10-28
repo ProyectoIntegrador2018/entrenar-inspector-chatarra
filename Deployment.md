@@ -6,6 +6,8 @@ Este documento fue creado con la finalidad de facilitar el proceso de deployment
 
 * React
 * Ionic
+* NPM
+* Angular
 * MongoDB
 * BD en Atlas
 * Git
