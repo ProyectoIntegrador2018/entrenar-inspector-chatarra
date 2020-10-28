@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { HttpClient, HttpParams  } from '@angular/common/http';
 
 @Component({
   selector: 'app-tab2',
@@ -10,10 +11,32 @@ export class Tab2Page {
   resultsTime: any;
   results: any = [];
 
-  constructor() {
-    this.resultsTime = "week"
-    this.setUpTest();
-    this.getResults();
+  constructor(private http: HttpClient) {
+    this.resultsTime = "month"
+    //this.setUpTest();
+    this.getScores();
+  }
+
+  async getScores(){
+    var scores: any;
+    if(this.resultsTime == "week"){
+      scores = await this.http.get("https://chatarrapp-api.herokuapp.com/attempts/scoresWeek").toPromise();
+    }
+    if(this.resultsTime == "month"){
+      scores = await this.http.get("https://chatarrapp-api.herokuapp.com/attempts/scores").toPromise();
+    }
+    if(this.resultsTime == "previousMonth"){
+      scores = await this.http.get("https://chatarrapp-api.herokuapp.com/attempts/scoresPast").toPromise();
+    }
+    //console.log(scores);
+    this.results = [];
+    for(var entry of scores){
+      //console.log(entry.username + ", " + entry.score);
+      this.results.push({
+        name: entry.username,
+        points: entry.score
+      })
+    }
   }
 
   setUpTest(){
@@ -38,29 +61,9 @@ export class Tab2Page {
     })
   }
 
-  getResults() {
-    //get results from server
-    /*
-    this.http.get(this.apiURL).subscribe((response) => {
-      this.results = response;
-      });
-    */
-    if(this.resultsTime == "week"){
-      
-    }
-
-    if(this.resultsTime == "month"){
-      
-    }
-
-    if(this.resultsTime == "previousMonth"){
-      
-    }
-  }
-
   changeResults(){
     console.log("Results time changed.");
-    this.getResults()
+    this.getScores();
   }
 
 }
