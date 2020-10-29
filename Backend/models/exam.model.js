@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 
 const examSchema = new Schema({
     examName: { type: String, required: true },
-    images : [String],
+    images :[{type: Schema.Types.ObjectId, ref: 'Imagen'}],
     description: { type: String},
 }, {
     timestamps: true,

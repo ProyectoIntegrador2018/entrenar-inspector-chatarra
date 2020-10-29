@@ -29,8 +29,8 @@ router.route('/add').post((req, res) => {
             res.statusMessage = err.message;
             return res.status( 400 ).end();
         });
-
 });
+
 router.route('/login').post((req,res) => {
     let { username, password } = req.body;
 
