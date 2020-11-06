@@ -1,6 +1,7 @@
 const router = require('express').Router();
+const auth = require('../middleware/auth')
 let Attempt = require('../models/attempt.model');
-
+router.use(auth)
 router.route('/').get((req,res) => {
     Attempt.find()
         .then(attempts => res.json(attempts))
