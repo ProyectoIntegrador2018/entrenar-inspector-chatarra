@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalController, AlertController } from '@ionic/angular';
-import { HttpClient, HttpParams  } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { Storage } from '@ionic/storage';
 //import { setServers } from 'dns';
 
@@ -37,16 +37,33 @@ export class ExamPage implements OnInit {
   currentClass = "TYPEA";
 
   loginUsername = "";
+  loginToken = "";
+  serverAddress = "";
 
   currentExam: any;
+
+  headers: any;
 
   constructor(private http: HttpClient, public modalController: ModalController, public alertController: AlertController, private storage: Storage) { }
 
   async ionViewWillEnter(){
 
-    this.storage.get('loginUsername').then((val) => {
+    await this.storage.get('loginUsername').then((val) => {
       if (val != "" && val != undefined){
        this.loginUsername = val;
+      }
+    });
+
+    await this.storage.get('loginToken').then((val) => {
+      if (val != "" && val != undefined){
+       this.loginToken = val;
+       this.headers = new HttpHeaders({'auth_key': this.loginToken});
+      }
+    });
+
+    await this.storage.get('serverAddress').then((val) => {
+      if (val != "" && val != undefined){
+       this.serverAddress = val;
       }
     });
 
@@ -74,11 +91,11 @@ export class ExamPage implements OnInit {
   }
 
   async setUpTest(){
-    var exams = await this.http.get("https://chatarrapp-api.herokuapp.com/exams").toPromise();
+    var exams = await this.http.get(this.serverAddress + "/exams", {'headers': this.headers}).toPromise();
     this.currentExam = exams[2];
     console.log(this.currentExam);
     for (var image of this.currentExam.images){
-      var imageInfo: any = await this.http.get("https://chatarrapp-api.herokuapp.com/images/" + image).toPromise();
+      var imageInfo: any = await this.http.get(this.serverAddress + "/images/" + image, {'headers': this.headers}).toPromise();
       //console.log(imageInfo._id);
       this.sets.push({
         image: imageInfo.imageURL,
@@ -176,7 +193,7 @@ export class ExamPage implements OnInit {
       }
       else{
         //send results to server
-        var attemptResult = await this.http.post("https://chatarrapp-api.herokuapp.com/attempts/add", {username: this.loginUsername, exam: this.currentExam.examName, score: Math.floor((this.correct/this.totalNum)*100), date: new Date()}).toPromise();
+        var attemptResult = await this.http.post(this.serverAddress + "/attempts/add", {username: this.loginUsername, exam: this.currentExam.examName, score: Math.floor((this.correct/this.totalNum)*100), date: new Date()}, {'headers': this.headers}).toPromise();
         console.log(attemptResult);
         this.resultsString = "Tu resultado es de " + this.correct + " de " + this.totalNum + ". Te invitamos a checar los resultados";
       }
@@ -205,7 +222,7 @@ export class ExamPage implements OnInit {
             handler: async data => {
               console.log(this.currentNum - 1 + ", " + data.mensaje)
               //enviar a servidor id y mensaje
-              var reportResult = await this.http.post("https://chatarrapp-api.herokuapp.com/reports/add", {username: this.loginUsername, report: data.mensaje, imageID: this.sets[this.currentNum - 1].id}).toPromise();
+              var reportResult = await this.http.post(this.serverAddress + "/reports/add", {username: this.loginUsername, report: data.mensaje, imageID: this.sets[this.currentNum - 1].id}, {'headers': this.headers}).toPromise();
               console.log(reportResult);
             }
         }
