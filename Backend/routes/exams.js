@@ -1,6 +1,8 @@
 const router = require('express').Router();
-let Exam = require('../models/exam.model');
 
+const auth = require('../middleware/auth')
+let Exam = require('../models/exam.model');
+router.use(auth)
 router.route('/').get((req,res) => {
     Exam.find()
         .then(exams => res.json(exams))

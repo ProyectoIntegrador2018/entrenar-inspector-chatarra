@@ -1,16 +1,17 @@
 const router = require('express').Router();
 const bcrypt = require( 'bcryptjs' );
+const auth = require('../middleware/auth')
 const jsonwebtoken = require( 'jsonwebtoken' );
 let User = require('../models/user.model');
 const SECRET = process.env.SECRET || "secretsecret"
 
-router.route('/').get((req,res) => {
+router.route('/').get(auth,(req,res) => {
     User.find()
         .then(users => res.json(users))
         .catch(err => res.status(400).json('Error: ' + err));
 });
 
-router.route('/add').post((req, res) => {
+router.route('/add').post(auth,(req, res) => {
     const username = req.body.username;
     const password = req.body.password;
 
@@ -29,8 +30,8 @@ router.route('/add').post((req, res) => {
             res.statusMessage = err.message;
             return res.status( 400 ).end();
         });
-
 });
+
 router.route('/login').post((req,res) => {
     let { username, password } = req.body;
 
@@ -75,13 +76,13 @@ router.route('/:id').get((req,res) => {
         .catch(err => res.status(400).json('Error: ' + err));
 });
 
-router.route('/:id').delete((req,res) => {
+router.route('/:id').delete(auth,(req,res) => {
     User.findByIdAndDelete(req.params.id)
         .then(() => res.json('User deleted'))
         .catch(err => res.status(400).json('Error: ' + err));
 });
 
-router.route('/update/:id').post((req, res) => {
+router.route('/update/:id').post(auth,(req, res) => {
     User.findById(req.params.id)
         .then(user => {
             user.username = req.body.username;

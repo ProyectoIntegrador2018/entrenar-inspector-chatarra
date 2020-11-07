@@ -33,6 +33,7 @@ app.use('/exams', examsRouter);
 app.use('/attempts', attemptsRouter);
 app.use('/reports', reportRouter );
 
+
 app.listen(port, () => {
     console.log(`Server is running on port: ${port}`);
 });
