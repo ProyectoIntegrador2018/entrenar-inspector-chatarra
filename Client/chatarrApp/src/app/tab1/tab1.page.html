@@ -10,7 +10,13 @@
 
   <ion-card class="centerImage">
     <ion-card-header>
-      <ion-card-title style="text-align:center">Usarás el conjunto de imágenes de esta semana.</ion-card-title>
+      <ion-card-title style="text-align:center">Tomarás el examen seleccionado de la siguiente lista.</ion-card-title>
+      <ion-item>
+        <ion-label>Exámenes Disponibles</ion-label>
+        <ion-select [(ngModel)]="examSelect" okText="Elegir" cancelText="Cancelar">
+          <ion-select-option *ngFor="let exam of exams" [value]="exam">{{exam.examName}}</ion-select-option>
+        </ion-select>
+      </ion-item>
     </ion-card-header>
   </ion-card>
 

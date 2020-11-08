@@ -91,9 +91,7 @@ export class ExamPage implements OnInit {
   }
 
   async setUpTest(){
-    var exams = await this.http.get(this.serverAddress + "/exams", {'headers': this.headers}).toPromise();
-    this.currentExam = exams[2];
-    console.log(this.currentExam);
+    //console.log(this.currentExam);
     for (var image of this.currentExam.images){
       var imageInfo: any = await this.http.get(this.serverAddress + "/images/" + image, {'headers': this.headers}).toPromise();
       //console.log(imageInfo._id);
@@ -128,8 +126,8 @@ export class ExamPage implements OnInit {
 
   setUpQuestion(){
     //console.log(this.possibleAnswers.length - 1);
-    console.log(this.sets);
-    console.log(this.totalNum);
+    //console.log(this.sets);
+    //console.log(this.totalNum);
     this.currentImage = this.sets[this.currentNum - 1].image;
     this.currentClass = this.sets[this.currentNum - 1].class.toUpperCase();
 
@@ -220,10 +218,10 @@ export class ExamPage implements OnInit {
         {
             text: 'Reportar',
             handler: async data => {
-              console.log(this.currentNum - 1 + ", " + data.mensaje)
+              //console.log(this.currentNum - 1 + ", " + data.mensaje)
               //enviar a servidor id y mensaje
               var reportResult = await this.http.post(this.serverAddress + "/reports/add", {username: this.loginUsername, report: data.mensaje, imageID: this.sets[this.currentNum - 1].id}, {'headers': this.headers}).toPromise();
-              console.log(reportResult);
+              //console.log(reportResult);
             }
         }
     ]
