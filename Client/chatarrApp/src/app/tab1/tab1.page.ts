@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { ExamPage } from '../exam/exam.page';
 import { ModalController } from '@ionic/angular';
 import { AlertController } from '@ionic/angular';
+import { Storage } from '@ionic/storage';
+import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 
 @Component({
   selector: 'app-tab1',
@@ -10,36 +12,74 @@ import { AlertController } from '@ionic/angular';
 })
 export class Tab1Page {
 
-  constructor(public modalController: ModalController, public alertController: AlertController) {}
+  loginToken = "";
+  serverAddress = "";
+  exams: any = [];
+  examSelect: any;
+  headers: any;
 
-  async practice(){
-    const modal = await this.modalController.create({
-      component: ExamPage,
-      componentProps: { 
-        practiceMode: true 
-      },
-      cssClass: "fullscreenModal"
+  constructor(private http: HttpClient, public modalController: ModalController, public alertController: AlertController, private storage: Storage) {}
+
+  async ionViewWillEnter(){
+
+    await this.storage.get('loginToken').then((val) => {
+      if (val != "" && val != undefined){
+       this.loginToken = val;
+       this.headers = new HttpHeaders({'auth_key': this.loginToken});
+      }
     });
 
-    await modal.present(); 
+    await this.storage.get('serverAddress').then((val) => {
+      if (val != "" && val != undefined){
+       this.serverAddress = val;
+      }
+    });
+
+    // get list of exams from server
+    this.exams = await this.http.get(this.serverAddress + "/exams", {'headers': this.headers}).toPromise();
+
+  }
+
+  async practice(){
+    if(this.examSelect == undefined){
+      this.errorAlert();
+    }
+    else{
+      const modal = await this.modalController.create({
+        component: ExamPage,
+        componentProps: { 
+          practiceMode: true,
+          currentExam: this.examSelect
+        },
+        cssClass: "fullscreenModal"
+      });
+
+      await modal.present(); 
+    }
   }
 
   async exam(){
-    const modal = await this.modalController.create({
-      component: ExamPage,
-      componentProps: { 
-        practiceMode: false 
-      },
-      cssClass: "fullscreenModal"
-    });
+    if(this.examSelect == undefined){
+      this.errorAlert();
+    }
+    else{
+      const modal = await this.modalController.create({
+        component: ExamPage,
+        componentProps: { 
+          practiceMode: false,
+          currentExam: this.examSelect
+        },
+        cssClass: "fullscreenModal"
+      });
 
-    await modal.present(); 
+      await modal.present(); 
+    }
   }
 
-  async testAlert() {
+  async errorAlert() {
     const alert = await this.alertController.create({
       header: 'Error',
-      message: 'No se puede tomar un examen en este momento.',
+      message: 'Se debe elegir un examen para continuar.',
       buttons: ['OK']
     });
 
