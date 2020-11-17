@@ -4,9 +4,12 @@ const Schema = mongoose.Schema;
 
 const attemptSchema = new Schema({
     username: { type: String, required: true },
-    exam: { type: String, required: true },
-    score: {type: Number},
+    examName: { type: String, required: true },
+    examID: { type: Schema.Types.ObjectId, ref: 'Exam' },
+    score: { type: Number, required: true },
+    attempt: { type: Number },
     date: { type: Date, required: true },
+    examDueDate: {type: Date, required: true}
 }, {
     timestamps: true,
 });

@@ -4,7 +4,7 @@ const jsonwebtoken = require('jsonwebtoken');
 const auth = require('../middleware/auth')
 const SECRET = process.env.SECRET || "secretsecret"
 
-let User = require('../models/user.model');
+let User = require('../models/admin.model');
 
 router.route('/').get(auth,(req,res) => {
     User.find()
@@ -12,7 +12,7 @@ router.route('/').get(auth,(req,res) => {
         .catch(err => res.status(400).json('Error: ' + err));
 });
 
-router.route('/add').post((req, res) => {
+router.route('/add').post(auth,(req, res) => {
     const username = req.body.username;
     const password = req.body.password;
     bcrypt.hash(password, 10)
@@ -21,18 +21,16 @@ router.route('/add').post((req, res) => {
             const newUser = new User({username, password});
         
             newUser.save()
-            .then(() => res.json('User added'))
+            .then(() => res.json('Admin added.'))
             .catch(err => res.status(400).json('Error: ' + err));
-            
-
         })
-        .catch( err => {
+        .catch(err => {
             res.statusMessage = err.message;
             return res.status( 400 ).end();
         });
 });
 
-// Revisar esta función
+// Revisar esta funcion
 router.route('/login').post((req,res) => {
     let { username, password } = req.body;
 

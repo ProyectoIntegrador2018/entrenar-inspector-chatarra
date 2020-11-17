@@ -1,7 +1,9 @@
 const router = require('express').Router();
-let Image = require('../models/image.model');
 const auth = require('../middleware/auth')
+let Image = require('../models/image.model');
+
 router.use(auth)
+
 router.route('/').get((req,res) => {
     Image.find()
         .then(images => res.json(images))

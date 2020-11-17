@@ -1,10 +1,22 @@
 const router = require('express').Router();
-
-const auth = require('../middleware/auth')
+const auth = require('../middleware/auth');
 let Exam = require('../models/exam.model');
-router.use(auth)
+
+// router.use(auth)
+
 router.route('/').get((req,res) => {
     Exam.find()
+        .then(exams => res.json(exams))
+        .catch(err => res.status(400).json('Error: ' + err));
+});
+
+router.route('/monthly').get((req,res) => {
+    date = new Date()
+    month = date.getMonth()
+    year = date.getFullYear()
+    today = date.getDate()
+    console.log(month, year, today)
+    Exam.find({date : {$gte: new Date(year,month,1), $lte: new Date(year,month,today)}}).sort({"score" : "desc"})
         .then(exams => res.json(exams))
         .catch(err => res.status(400).json('Error: ' + err));
 });
@@ -12,12 +24,21 @@ router.route('/').get((req,res) => {
 router.route('/add').post((req, res) => {
     const examName = req.body.examName;
     const images = req.body.images;
-    const description = req.body.description
-    
+    const size = req.body.size;
+    const pool = req.body.pool;
+    const attempts = req.body.attempts;
+    const description = req.body.description;
+    const date = req.body.date;
+    const dueDate = req.body.dueDate;
     const newExam = new Exam({
         examName,
         images,
+        size,
+        pool,
+        attempts,
         description,
+        date,
+        dueDate
     });
 
     newExam.save()
@@ -42,6 +63,9 @@ router.route('/update/:id').post((req, res) => {
         .then(exam => {
             exam.examName = req.body.examName;
             exam.images = req.body.images;
+            exam.size = req.body.size;
+            exam.pool = req.body.pool;
+            exam.attempts = req.body.pool;
             exam.description = req.body.description;
 
             exam.save()
