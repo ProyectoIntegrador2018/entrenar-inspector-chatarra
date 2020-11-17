@@ -6,8 +6,6 @@ import { IonicModule } from '@ionic/angular';
 
 import { ExamPageRoutingModule } from './exam-routing.module';
 
-import { ExamPage } from './exam.page';
-
 import { IonicStorageModule } from '@ionic/storage';
 
 @NgModule({
@@ -18,6 +16,6 @@ import { IonicStorageModule } from '@ionic/storage';
     ExamPageRoutingModule,
     IonicStorageModule.forRoot()
   ],
-  declarations: [ExamPage]
+  declarations: []
 })
 export class ExamPageModule {}

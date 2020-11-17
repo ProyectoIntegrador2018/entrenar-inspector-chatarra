@@ -59,7 +59,7 @@ export class Tab3Page {
       this.sendToast('Error al iniciar sesión.');
     }
     
-    this.sendToast('Se ha iniciado sesión. ' + loginResult.token);
+    this.sendToast('Se ha iniciado sesión.');
     this.storage.set('loginUsername', this.loginUsername);
     this.storage.set('loginToken', loginResult.token);
     this.loginBool = true;

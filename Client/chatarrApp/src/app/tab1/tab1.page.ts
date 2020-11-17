@@ -35,27 +35,21 @@ export class Tab1Page {
       }
     });
 
-    // get list of exams from server
-    this.exams = await this.http.get(this.serverAddress + "/exams", {'headers': this.headers}).toPromise();
+    // get list of current exams from server
+    this.exams = await this.http.get(this.serverAddress + "/exams/monthly", {'headers': this.headers}).toPromise();
 
   }
 
   async practice(){
-    if(this.examSelect == undefined){
-      this.errorAlert();
-    }
-    else{
-      const modal = await this.modalController.create({
-        component: ExamPage,
-        componentProps: { 
-          practiceMode: true,
-          currentExam: this.examSelect
-        },
-        cssClass: "fullscreenModal"
-      });
+    const modal = await this.modalController.create({
+      component: ExamPage,
+      componentProps: { 
+        practiceMode: true
+      },
+      cssClass: "fullscreenModal"
+    });
 
-      await modal.present(); 
-    }
+    await modal.present(); 
   }
 
   async exam(){

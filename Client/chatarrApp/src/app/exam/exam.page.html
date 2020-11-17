@@ -9,7 +9,13 @@
 
 <ion-content [fullscreen]="true">
 
-  <ion-card [hidden]="showingResults">
+  <ion-card [hidden]="!practiceMode">
+    <ion-card-header>
+      <ion-card-title style="text-align:center">{{practiceLives}}/3</ion-card-title>
+    </ion-card-header>
+  </ion-card>
+
+  <ion-card [hidden]="hideQuestionNum">
     <ion-card-header>
       <ion-card-title style="text-align:center">{{currentNum}}/{{totalNum}}</ion-card-title>
     </ion-card-header>
