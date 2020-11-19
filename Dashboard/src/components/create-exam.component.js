@@ -13,13 +13,16 @@ export default class AddImage extends Component {
 
         this.state = {
             classification: '',
-            URL: 'URL de la imagen',
+            URL: 'Numero de preguntas',
             date: new Date(),
             types: []
         }
     }
 
     componentDidMount() {
+        axios.get('http://localhost:5000/images/')
+        .then(res => console.log(res.data));
+
       this.setState({
         types: ['Chatarra Nacional', 
                 'Chicharrón Nacional', 
@@ -67,10 +70,10 @@ export default class AddImage extends Component {
     render() {
         return (
         <div>
-          <h3>Agregar Imagen Nueva</h3>
+          <h3>Agregar Nuevo Examen</h3>
           <form onSubmit={this.onSubmit}>
             <div className="form-group"> 
-              <label>Clasificación: </label>
+              <label>Imagen: </label>
               <select ref="userInput"
                   required
                   className="form-control"
@@ -87,7 +90,7 @@ export default class AddImage extends Component {
               </select>
             </div>
             <div className="form-group"> 
-              <label>URL: </label>
+              <label>Preguntas: </label>
               <input  type="text"
                   required
                   className="form-control"
@@ -104,7 +107,6 @@ export default class AddImage extends Component {
                 />
               </div>
             </div>
-    
             <div className="form-group">
               <input type="submit" value="Agregar" className="btn btn-primary" />
             </div>

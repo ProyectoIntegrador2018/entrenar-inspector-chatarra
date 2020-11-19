@@ -2,11 +2,16 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios'
 
+const imageStyle = {
+    width: 250,
+    height: 200
+};
+
 const Image = props => (
     <tr>
         <td>{props.image._id}</td>
         <td>{props.image.classification}</td>
-        <td><img src={props.image.imageURL} sytle={{width: 50, height: 50}} /></td>
+        <td><img style={imageStyle} src={props.image.imageURL} /></td>
         <td>
             <Link to={"/edit/"+props.image._id}>edit</Link> | <a href="#" onClick={() => {props.deleteImage(props.image._id) }}>delete</a>
         </td>
@@ -30,6 +35,7 @@ export default class ImageList extends Component {
           })
     }
 
+    // Falta implementar un delete recursivo buscar con Mongoose
     deleteImage(id) {
         axios.delete('http://localhost:5000/images/'+id)
           .then(res => console.log(res.data));
@@ -47,7 +53,7 @@ export default class ImageList extends Component {
     render() {
         return (
             <div>
-              <h3>Lista de Imágnes en la base de  datos</h3>
+              <h3>Lista de Imágenes en la Base de Datos</h3>
               <table className="table">
                   <thead className="thead-light">
                   <tr>
