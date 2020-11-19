@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { HttpClient, HttpParams  } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
+import { Storage } from '@ionic/storage';
 
 @Component({
   selector: 'app-tab2',
@@ -11,22 +12,43 @@ export class Tab2Page {
   resultsTime: any;
   results: any = [];
 
-  constructor(private http: HttpClient) {
+  loginToken = "empty";
+  serverAddress = "empty";
+
+  constructor(private http: HttpClient, private storage: Storage) {
     this.resultsTime = "month"
     //this.setUpTest();
     this.getScores();
   }
 
+  async getStorage(){
+    await this.storage.get('loginToken').then((val) => {
+      if (val != "" && val != undefined){
+       this.loginToken = val;
+      }
+    });
+
+    await this.storage.get('serverAddress').then((val) => {
+      if (val != "" && val != undefined){
+       this.serverAddress = val;
+      }
+    });
+  }
+
   async getScores(){
     var scores: any;
+
+    await this.getStorage();
+
+    const headers = new HttpHeaders({'auth_key': this.loginToken});
     if(this.resultsTime == "week"){
-      scores = await this.http.get("https://chatarrapp-api.herokuapp.com/attempts/scoresWeek").toPromise();
+      scores = await this.http.get(this.serverAddress + "/attempts/scoresWeek", {'headers': headers}).toPromise();
     }
     if(this.resultsTime == "month"){
-      scores = await this.http.get("https://chatarrapp-api.herokuapp.com/attempts/scores").toPromise();
+      scores = await this.http.get(this.serverAddress + "/attempts/scores", {'headers': headers}).toPromise();
     }
     if(this.resultsTime == "previousMonth"){
-      scores = await this.http.get("https://chatarrapp-api.herokuapp.com/attempts/scoresPast").toPromise();
+      scores = await this.http.get(this.serverAddress + "/attempts/scoresPast", {'headers': headers}).toPromise();
     }
     //console.log(scores);
     this.results = [];
@@ -62,7 +84,7 @@ export class Tab2Page {
   }
 
   changeResults(){
-    console.log("Results time changed.");
+    //console.log("Results time changed.");
     this.getScores();
   }
 

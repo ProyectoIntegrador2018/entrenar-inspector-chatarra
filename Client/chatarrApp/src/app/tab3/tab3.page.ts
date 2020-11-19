@@ -26,6 +26,11 @@ export class Tab3Page {
        this.logoutBool = false;
       }
     });
+    this.storage.get('serverAddress').then((val) => {
+      if (val != "" && val != undefined){
+       this.serverAddress = val;
+      }
+    });
   }
 
   async sendToast(toastMessage) {
@@ -54,7 +59,7 @@ export class Tab3Page {
       this.sendToast('Error al iniciar sesión.');
     }
     
-    this.sendToast('Se ha iniciado sesión. ' + loginResult.token);
+    this.sendToast('Se ha iniciado sesión.');
     this.storage.set('loginUsername', this.loginUsername);
     this.storage.set('loginToken', loginResult.token);
     this.loginBool = true;
@@ -73,13 +78,14 @@ export class Tab3Page {
 
   addressConfig(){
     this.sendToast('Se ha configurado la dirección del servidor.');
-    console.log(this.serverAddress);
+    this.storage.set('serverAddress', this.serverAddress);
+    //console.log(this.serverAddress);
   }
 
   async loginAlert() {
     const alert = await this.alertController.create({
       header: 'Error',
-      message: 'No se puede iniciar sesion en este momento.',
+      message: 'No se puede iniciar sesión en este momento.',
       buttons: ['OK']
     });
 
