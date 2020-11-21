@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const auth = require('../middleware/auth')
 let Attempt = require('../models/attempt.model');
+let Exam = require('../models/exam.model');
 
 //router.use(auth)
 
@@ -48,12 +49,14 @@ router.route('/add').post((req, res) => {
     const score = Number(req.body.score);
     const date = Date.parse(req.body.date);
     const examDueDate = Date.parse(req.body.examDueDate);
+    const examID = req.body.examID;
     const newAttempt = new Attempt({
         username,
         examName,
         score,
         date,
-        examDueDate
+        examDueDate,
+        examID
     });
     
     newAttempt.save()
@@ -87,6 +90,60 @@ router.route('/update/:id').post((req, res) => {
         })
         .catch(err => res.status(400).json('Error: ' + err));
 });
+
+router.route('/getAttempt').post((req,res) => {
+    const username = req.body.username;
+    const examID = req.body.examID;
+    Attempt.findOneAndUpdate({username: username, examID: examID}, {$inc: {attempt: -1}}, {new: true})
+        .then(attempt =>{
+            if(attempt){
+                return res.json(attempt);
+            }
+            else{
+                Exam.findById(examID)
+                    .then(exam => {
+                        const examName = exam.examName;
+                        const score = 0;
+                        const date = Date.now();
+                        const examDueDate = Date.parse(exam.dueDate);
+                        const attempt = exam.attempts;
+                        const newAttempt = new Attempt({
+                            username,
+                            examName,
+                            score,
+                            date,
+                            examDueDate,
+                            examID,
+                            attempt
+                        });
+                        newAttempt.save()
+                            .then(newAt => res.json(newAt))
+                            .catch(err => res.status(400).json('Error: ' + err));
+                    })
+                    .catch(err => res.status(400).json('Error: ' + err));
+
+            }
+        })
+        .catch(err => res.status(400).json('Error: ' + err));
+});
+
+router.route('/updateAttempt').post((req,res) => {
+    const username = req.body.username;
+    const examID = req.body.examID;
+    const score = Number(req.body.score);
+    const date = Date.parse(req.body.date);
+    Attempt.findOne({username: username, examID: examID})
+    .then(attempt => {
+        if(score > attempt.score) attempt.score = score;
+        attempt.date = date;
+        attempt.save()
+            .then(() => res.json('Attempt updated!'))
+            .catch(err => res.status(400).json('Error: ' + err));
+
+    })
+    .catch(err => res.status(400).json('Error: ' + err));
+});
+
 
 module.exports = router;
 
