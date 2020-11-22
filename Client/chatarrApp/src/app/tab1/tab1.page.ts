@@ -13,6 +13,7 @@ import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 export class Tab1Page {
 
   loginToken = "";
+  loginUsername = "";
   serverAddress = "";
   exams: any = [];
   examSelect: any;
@@ -26,6 +27,12 @@ export class Tab1Page {
       if (val != "" && val != undefined){
        this.loginToken = val;
        this.headers = new HttpHeaders({'auth_key': this.loginToken});
+      }
+    });
+
+    this.storage.get('loginUsername').then((val) => {
+      if (val != "" && val != undefined){
+       this.loginUsername = val;
       }
     });
 
@@ -54,26 +61,32 @@ export class Tab1Page {
 
   async exam(){
     if(this.examSelect == undefined){
-      this.errorAlert();
+      this.errorAlert('Se debe elegir un examen para continuar.');
     }
     else{
-      const modal = await this.modalController.create({
-        component: ExamPage,
-        componentProps: { 
-          practiceMode: false,
-          currentExam: this.examSelect
-        },
-        cssClass: "fullscreenModal"
-      });
+      var checkAttempt: any = await this.http.post(this.serverAddress + "/attempts/getAttempt", {username: this.loginUsername, examID: this.examSelect._id}, {'headers': this.headers}).toPromise();
+      if(checkAttempt.attempt <= 0){
+        this.errorAlert('Se ha acabado los intentos para este examen.');
+      }
+      else{
+        const modal = await this.modalController.create({
+          component: ExamPage,
+          componentProps: { 
+            practiceMode: false,
+            currentExam: this.examSelect
+          },
+          cssClass: "fullscreenModal"
+        });
 
-      await modal.present(); 
+        await modal.present(); 
+      }
     }
   }
 
-  async errorAlert() {
+  async errorAlert(message) {
     const alert = await this.alertController.create({
       header: 'Error',
-      message: 'Se debe elegir un examen para continuar.',
+      message: message,
       buttons: ['OK']
     });
 
