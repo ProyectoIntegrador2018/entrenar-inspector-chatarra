@@ -242,7 +242,6 @@ export class ExamPage implements OnInit {
 
   async sendResults(){
     this.showingResults = true;
-    //console.log("REACHED END");
     this.currentNum--;
     this.currentImage = "";
     if(this.practiceMode == true){
@@ -250,15 +249,10 @@ export class ExamPage implements OnInit {
     }
     else{
       //send results to server
-      var attemptResult = await this.http.post(this.serverAddress + "/attempts/add", {username: this.loginUsername, examName: this.currentExam.examName, examID: this.currentExam._id, 
-        score: Math.floor((this.correct/this.totalNum)*100), attempt: 1, date: new Date()}, {'headers': this.headers}).toPromise();
+      var attemptResult = await this.http.post(this.serverAddress + "/attempts/updateAttempt", {username: this.loginUsername, examID: this.currentExam._id, 
+        score: Math.floor((this.correct/this.totalNum)*100), date: new Date()}, {'headers': this.headers}).toPromise();
       console.log(attemptResult);
-      if(attemptResult == "Attempts exceeded"){
-        this.resultsString = "Se ha excedido el límite de intentos para este examen.";
-      }
-      else{
-        this.resultsString = "Tu resultado es de " + this.correct + " de " + this.totalNum + ". Te invitamos a ir a la pestaña de resultados.";
-      }
+      this.resultsString = "Tu resultado es de " + this.correct + " de " + this.totalNum + ". Te invitamos a ir a la pestaña de resultados.";
     }
   }
 
