@@ -11,6 +11,7 @@ export class AuthGuardService {
     
    }
   
+  // Obtain values from storage
   async checkStorage(){
     var loginToken = "empty";
     var serverAddress = "empty";
@@ -28,6 +29,7 @@ export class AuthGuardService {
       }
     });
 
+    // If the loginToken and server address have been filled, allow entry to other pages
     if(loginToken != "empty" && serverAddress != "empty"){
       return true;
     }
@@ -37,6 +39,7 @@ export class AuthGuardService {
 
   }
 
+  // Use checkStorage() to allow or deny entry to other pages
   async canActivate(route: ActivatedRouteSnapshot){
     var authenticated: any = await this.checkStorage();
 

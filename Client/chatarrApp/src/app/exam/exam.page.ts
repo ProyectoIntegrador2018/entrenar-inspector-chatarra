@@ -22,18 +22,16 @@ export class ExamPage implements OnInit {
   correct = 0;
   resultsString = "";
 
+  // Each set contains imageurl y clasificacion, in the form of .image and .class
   sets: any = [];
-  //each set contains imageurl and classification, so .image and .class
 
   currentNum = 1;
   totalNum = 0;
 
-  //possibleAnswers: string[] = [];
+  // Possible classifications
   possibleAnswers = ["Chatarra Nacional Primera", "Chicharron Nacional", "Placa y Estructura Nacional", "Rebaba de Acero", 
   "Regreso Industrial Galvanizado Nacional", "Mixto Cizallado", "Mixto Para Procesar"];
   options = ["", "", "", ""];
-
-  //apiURL = '';
 
   currentImage = "";
   currentClass = "TYPEA";
@@ -50,18 +48,22 @@ export class ExamPage implements OnInit {
 
   constructor(private http: HttpClient, public modalController: ModalController, public alertController: AlertController, private storage: Storage) { }
 
+  // Antes de entrar a la pantalla
   async ionViewWillEnter(){
 
+    // If practice mode is on, hide the question number
     if(this.practiceMode){
       this.hideQuestionNum = true;
     }
 
+    // Obtain the username from the device storage
     await this.storage.get('loginUsername').then((val) => {
       if (val != "" && val != undefined){
        this.loginUsername = val;
       }
     });
 
+    // Obtain the login token from the device storage
     await this.storage.get('loginToken').then((val) => {
       if (val != "" && val != undefined){
        this.loginToken = val;
@@ -69,15 +71,18 @@ export class ExamPage implements OnInit {
       }
     });
 
+    // Obtain the server address from the device storage
     await this.storage.get('serverAddress').then((val) => {
       if (val != "" && val != undefined){
        this.serverAddress = val;
       }
     });
 
+    // If practice mode is on, change set the title to Practice
     if(this.practiceMode){
       this.title = "Práctica";
     }
+    // Otherwise set it to Else
     else{
       this.title = "Examen";
     }
@@ -85,21 +90,15 @@ export class ExamPage implements OnInit {
     await this.setUpTest();
     this.setUpQuestion();
 
-    //get set from server
-    /*
-    this.http.get(this.apiURL).subscribe((response) => {
-      this.sets = response;
-      });
-    */
-
-    //save possible answers to possibleAnswers if they will vary
   }
 
   ngOnInit() {
   }
 
+  // Loads questions and images from the selected test or mode
   async setUpTest(){
-    //console.log(this.currentExam);
+
+    // If practice mode is off, load each image and its class from the selected exam to the list
     if(this.practiceMode == false){
 
       var selectedImages = [];
@@ -115,7 +114,6 @@ export class ExamPage implements OnInit {
 
       for (var image of this.currentExam.images){
         var imageInfo: any = await this.http.get(this.serverAddress + "/images/" + image, {'headers': this.headers}).toPromise();
-        //console.log(imageInfo._id);
         this.sets.push({
           image: imageInfo.imageURL,
           id: imageInfo._id,
@@ -124,6 +122,8 @@ export class ExamPage implements OnInit {
         this.totalNum++;
       }
     }
+
+    // If practice mode is on, load each image from the whole list of images to the list
     else{
 
       var imagesList: any = await this.http.get(this.serverAddress + "/images", {'headers': this.headers}).toPromise();
@@ -143,18 +143,15 @@ export class ExamPage implements OnInit {
     
   }
 
-  //Obtained from https://github.com/Daplie/knuth-shuffle
+  // Obtained from https://github.com/Daplie/knuth-shuffle
   shuffle(array) {
     var currentIndex = array.length, temporaryValue, randomIndex;
-  
-    // While there remain elements to shuffle...
+
     while (0 !== currentIndex) {
   
-      // Pick a remaining element...
       randomIndex = Math.floor(Math.random() * currentIndex);
       currentIndex -= 1;
   
-      // And swap it with the current element.
       temporaryValue = array[currentIndex];
       array[currentIndex] = array[randomIndex];
       array[randomIndex] = temporaryValue;
@@ -163,14 +160,12 @@ export class ExamPage implements OnInit {
     return array;
   }
 
+  // For each question, get its selected classification and possible options
   setUpQuestion(){
-    //console.log(this.possibleAnswers.length - 1);
-    //console.log(this.sets);
-    //console.log(this.totalNum);
     this.currentImage = this.sets[this.currentNum - 1].image;
     this.currentClass = this.sets[this.currentNum - 1].class.toUpperCase();
 
-    //setup options
+    // Setup options while avoiding repetitions
     this.options[0] = this.currentClass;
     var index = 1;
     var newClass = this.currentClass;
@@ -184,18 +179,20 @@ export class ExamPage implements OnInit {
       index++;
     }
     
-    //shuffle options
+    // Shuffle possible options
     this.options = this.shuffle(this.options);
   }
 
+  // When answering a question
   answer(option){
     this.currentNum++;
 
-    //check if option is correct, if so add to correct
+    // Check if the option is correct, if so add it to correct counter
     if(this.options[option].toUpperCase() == this.currentClass.toUpperCase()){
       this.correct++;
       this.answerCard = "Correcto, es " + this.currentClass;
     }
+    // If the option is incorrect, subtract the lives counter
     else{
       this.answerCard = "Incorrecto, es " + this.currentClass;
       this.practiceLives--;
@@ -204,12 +201,9 @@ export class ExamPage implements OnInit {
     this.showingResults = true;
     this.hideQuestionNum = true;
     this.questionActive = false;
-
-    //go to next question
-    //this.nextQuestion();
-    
   }
 
+  // Show the results for the answered question
   nextQuestion(){
     this.showingResults = false;
     if(this.practiceMode == false){
@@ -217,49 +211,68 @@ export class ExamPage implements OnInit {
     }
     this.questionActive = true;
 
+    // If practice mode is on
     if(this.practiceMode){
+      
+      // If the lives have run out, go to results screen
       if(this.practiceLives <= 0){
         this.sendResults();
       }
+
+      // If the lives have not run out and the limit of questions have been reached, 
+      // loop back to first one while shuffling, then proceed to next question
       else if(this.currentNum >= this.totalNum){
         this.sets = this.shuffle(this.sets);
         this.currentNum = 0;
         this.setUpQuestion();
       }
+
+      // If lives have not run out, proceed to next question
       else{
         this.setUpQuestion();
       }
     }
+
+    // If practice mode is not on
     else{
+
+      // If there are still questions remaining, go to next one
       if(this.currentNum <= this.totalNum){
         this.setUpQuestion();
       }
+
+      // If there are no questions remaining, show results
       else{
         this.sendResults();
       }
     }
   }
 
+  // Show results
   async sendResults(){
     this.showingResults = true;
     this.currentNum--;
     this.currentImage = "";
+
+    // If practice mode is on, show standard result message
     if(this.practiceMode == true){
       this.resultsString = "Tu resultado es de " + this.correct + " puntos.";
     }
+
+    // If practice mode is not on, show result message while sending results to server
     else{
-      //send results to server
       var attemptResult = await this.http.post(this.serverAddress + "/attempts/updateAttempt", {username: this.loginUsername, examID: this.currentExam._id, 
         score: Math.floor((this.correct/this.totalNum)*100), date: new Date()}, {'headers': this.headers}).toPromise();
-      console.log(attemptResult);
       this.resultsString = "Tu resultado es de " + this.correct + " de " + this.totalNum + ". Te invitamos a ir a la pestaña de resultados.";
     }
   }
 
+  // Go back to exam selection screen
   dismiss(){
     this.modalController.dismiss();
   }
 
+  // Report question with message
   async report(){
     const alert = await this.alertController.create({
       header: 'Reportar Pregunta',
@@ -277,10 +290,8 @@ export class ExamPage implements OnInit {
         {
             text: 'Reportar',
             handler: async data => {
-              //console.log(this.currentNum - 1 + ", " + data.mensaje)
-              //enviar a servidor id y mensaje
+              // Send queston id and message to server
               var reportResult = await this.http.post(this.serverAddress + "/reports/add", {username: this.loginUsername, report: data.mensaje, imageID: this.sets[this.currentNum - 1].id}, {'headers': this.headers}).toPromise();
-              //console.log(reportResult);
             }
         }
     ]
