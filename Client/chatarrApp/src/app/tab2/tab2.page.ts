@@ -13,21 +13,33 @@ export class Tab2Page {
   results: any = [];
 
   loginToken = "empty";
+  loginUsername = "empty";
   serverAddress = "empty";
 
+  // When creating the page, set default time selection to current month and get scores from said time
   constructor(private http: HttpClient, private storage: Storage) {
     this.resultsTime = "month"
-    //this.setUpTest();
     this.getScores();
   }
 
+  // Get values from storage
   async getStorage(){
+
+    // Obtain the login token from the device storage
     await this.storage.get('loginToken').then((val) => {
       if (val != "" && val != undefined){
        this.loginToken = val;
       }
     });
 
+    // Obtain the username from the device storage
+    await this.storage.get('loginUsername').then((val) => {
+      if (val != "" && val != undefined){
+       this.loginUsername = val;
+      }
+    });
+
+    // Obtain the server address from the device storage
     await this.storage.get('serverAddress').then((val) => {
       if (val != "" && val != undefined){
        this.serverAddress = val;
@@ -35,56 +47,49 @@ export class Tab2Page {
     });
   }
 
+  // Get the list of scores from server
   async getScores(){
     var scores: any;
+    var userEntry: any;
 
+    // Get values from storage
     await this.getStorage();
 
+    // Depending on selected time, get list of scores from server, along with the user score
     const headers = new HttpHeaders({'auth_key': this.loginToken});
     if(this.resultsTime == "week"){
       scores = await this.http.get(this.serverAddress + "/attempts/scoresWeek", {'headers': headers}).toPromise();
+      userEntry = await this.http.post(this.serverAddress + "/attempts/scoresWeek", {username: this.loginUsername}, {'headers': headers}).toPromise();
     }
     if(this.resultsTime == "month"){
       scores = await this.http.get(this.serverAddress + "/attempts/scores", {'headers': headers}).toPromise();
+      userEntry = await this.http.post(this.serverAddress + "/attempts/scores", {username: this.loginUsername}, {'headers': headers}).toPromise();
     }
     if(this.resultsTime == "previousMonth"){
       scores = await this.http.get(this.serverAddress + "/attempts/scoresPast", {'headers': headers}).toPromise();
+      userEntry = await this.http.post(this.serverAddress + "/attempts/scoresPast", {username: this.loginUsername}, {'headers': headers}).toPromise();
     }
-    //console.log(scores);
+
+    // Add each obtianed score to the list of scores displayed to the user
     this.results = [];
     for(var entry of scores){
-      //console.log(entry.username + ", " + entry.score);
       this.results.push({
         name: entry.username,
         points: entry.score
       })
     }
+    
+    // If the user has a score for the selected time, add it to the list of scores
+    if(userEntry[0] != undefined){
+      this.results.push({
+        name: "Tu puntaje: " + userEntry[0].username,
+        points: userEntry[0].score
+      })
+    }
   }
 
-  setUpTest(){
-    this.results.push({
-      name: "Test Name 1",
-      points: "100"
-    })
-
-    this.results.push({
-      name: "Test Name 2",
-      points: "90"
-    })
-
-    this.results.push({
-      name: "Test Name 3",
-      points: "80"
-    })
-
-    this.results.push({
-      name: "Test User",
-      points: "75"
-    })
-  }
-
+  // When the selected time is changed, obtain the corresponding list of scores
   changeResults(){
-    //console.log("Results time changed.");
     this.getScores();
   }
 

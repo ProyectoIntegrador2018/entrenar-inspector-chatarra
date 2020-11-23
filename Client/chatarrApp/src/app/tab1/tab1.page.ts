@@ -21,8 +21,10 @@ export class Tab1Page {
 
   constructor(private http: HttpClient, public modalController: ModalController, public alertController: AlertController, private storage: Storage) {}
 
+  // Before entering page
   async ionViewWillEnter(){
 
+    // Obtain the login token from the device storage
     await this.storage.get('loginToken').then((val) => {
       if (val != "" && val != undefined){
        this.loginToken = val;
@@ -30,23 +32,26 @@ export class Tab1Page {
       }
     });
 
+    // Obtain the username from the device storage
     this.storage.get('loginUsername').then((val) => {
       if (val != "" && val != undefined){
        this.loginUsername = val;
       }
     });
 
+    // Obtain the server address from the device storage
     await this.storage.get('serverAddress').then((val) => {
       if (val != "" && val != undefined){
        this.serverAddress = val;
       }
     });
 
-    // get list of current exams from server
+    // Get the list of current exams from the server
     this.exams = await this.http.get(this.serverAddress + "/exams/monthly", {'headers': this.headers}).toPromise();
 
   }
 
+  // Send user to exam page with pratice mode on
   async practice(){
     const modal = await this.modalController.create({
       component: ExamPage,
@@ -59,15 +64,26 @@ export class Tab1Page {
     await modal.present(); 
   }
 
+  // Send user to exam page with pratice mode off
   async exam(){
+
+    // Show error if an exam was not selected
     if(this.examSelect == undefined){
       this.errorAlert('Se debe elegir un examen para continuar.');
     }
+
+    // If an exam was selected
     else{
+      // Obtain the number of remaining attemtps for the selected exam
       var checkAttempt: any = await this.http.post(this.serverAddress + "/attempts/getAttempt", {username: this.loginUsername, examID: this.examSelect._id}, {'headers': this.headers}).toPromise();
+      
+      // Show error if the attempt limit for the selected exam was exceeded
       if(checkAttempt.attempt <= 0){
         this.errorAlert('Se ha acabado los intentos para este examen.');
       }
+
+      // If the number of remaining attempts has not been exceeded, 
+      // send the user to the exam screen with practice mode off
       else{
         const modal = await this.modalController.create({
           component: ExamPage,
@@ -83,6 +99,7 @@ export class Tab1Page {
     }
   }
 
+  // Show an alert with the sent message
   async errorAlert(message) {
     const alert = await this.alertController.create({
       header: 'Error',
