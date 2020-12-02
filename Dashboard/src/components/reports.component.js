@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios'
 
+const token = localStorage.getItem("token")
+axios.defaults.headers.common = {'Authorization' : `Bearer ${token}`}
+
 const imageStyle = {
     width: 250,
     height: 200
@@ -9,13 +12,12 @@ const imageStyle = {
 
 const Reports = props => (
     <tr>
-        <td>{props.report._id}</td>
+        <td>{props.report.imageID}</td>
         <td>{props.report.username}</td>
-        <td>image</td>
-        {/* <td><img style={imageStyle} src={props.image.imageURL} /></td> */}
+        <td><img style={imageStyle} src="https://lh3.googleusercontent.com/Dvu_OgKn5Bok3oqU7PRsx9vqiySjYaOenokVrd0xYHh1XRvqca-a_5Cv0yfwYuNe3zYHVQXGWrX29dROO6QdM6xs9icJeiYn3AWq5WuVfyV3JirF1WUi36fuZ48ra3RJ4lJnzaWjfw=w2400" /></td>
         <td>{props.report.report}</td>
         <td>
-            <Link to={"/edit/"+props.report._id}>edit</Link> | <a href="#" onClick={() => {props.deleteReport(props.report._id) }}>delete</a>
+            <Link to={"/edit/"+props.report.imageID}>edit</Link> | <a href="#" onClick={() => {props.deleteReport(props.report._id) }}>delete</a>
         </td>
     </tr>
 )
@@ -56,7 +58,7 @@ export default class ReportList extends Component {
 
     reportList() {
         return this.state.reports.map(currentReport => {
-            return <Reports report={currentReport} deleteReport={this.deleteReport} key={currentReport._id} />
+            return <Reports report={currentReport}  deleteReport={this.deleteReport} key={currentReport._id} />
         })
     }
 

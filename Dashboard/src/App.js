@@ -12,6 +12,7 @@ import CreateUser from './components/create-user.component';
 import AddImage from './components/add-image.component';
 import CreateExam from './components/create-exam.component';
 import EditImage from './components/edit-image.component';
+import MultipleImages from './components/multiple-images.component.js';
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
       <Route path="/examen" exact component={CreateExam} />
       
       <Route path="/edit/:id" component={EditImage} />
+      <Route path="/addMultiple/:array" component={MultipleImages} />
       
       </div>
     </Router>

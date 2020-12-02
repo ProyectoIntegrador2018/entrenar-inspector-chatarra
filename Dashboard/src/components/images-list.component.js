@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios'
 
+const token = localStorage.getItem("token")
+axios.defaults.headers.common = {'Authorization' : `Bearer ${token}`}
+
 const imageStyle = {
     width: 250,
     height: 200
@@ -33,6 +36,7 @@ export default class ImageList extends Component {
           .catch((error) => {
               console.log(error);
           })
+          console.log(localStorage.getItem("token"))
     }
 
     // Falta implementar un delete recursivo buscar con Mongoose

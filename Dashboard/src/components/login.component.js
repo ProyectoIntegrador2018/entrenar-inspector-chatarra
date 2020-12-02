@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 
+const token = localStorage.getItem("token")
+axios.defaults.headers.common = {'Authorization' : `Bearer ${token}`}
+
 export default class AddImage extends Component {
     constructor(props) {
         super(props);
@@ -13,7 +16,7 @@ export default class AddImage extends Component {
             contrasena: ''
         }
     }
-
+    
     onChangeName(e) {
         this.setState({
             username: e.target.value
@@ -35,9 +38,12 @@ export default class AddImage extends Component {
         console.log(user);
 
         axios.post('http://localhost:5000/users/login', user)
-          .then(res => console.log(res.data));
-
-        window.location = '/reportes';
+          .then(res => {
+            console.log(res.data)
+            localStorage.setItem('token', res.data.token)})
+        // if(localStorage.getItem('token')) {
+        //     window.location = '/imagenes';
+        // }
     }
 
     render() {
