@@ -2,17 +2,15 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios'
 
-const imageStyle = {
-    width: 250,
-    height: 200
-};
+const token = localStorage.getItem("token")
+axios.defaults.headers.common = {'Authorization' : `Bearer ${token}`}
+
 
 const Reports = props => (
     <tr>
         <td>{props.report.examName}</td>
         <td>{props.report.size}</td>
         <td>{props.report.description}</td>
-        {/* <td><img style={imageStyle} src={props.report.imageURL} /></td> */}
         <td>{props.report.report}</td>
         <td>
             <Link to={"/edit/"+props.report._id}>edit</Link> | <a href="#" onClick={() => {props.deleteReport(props.report._id) }}>delete</a>

@@ -1,9 +1,10 @@
-// PENDIENTE IMPLEMENTAR LA PARTE DE LOS TOKENS
-
 
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+
+const token = localStorage.getItem("token")
+axios.defaults.headers.common = {'Authorization' : `Bearer ${token}`}
 
 const Users = props => (
     <tr>

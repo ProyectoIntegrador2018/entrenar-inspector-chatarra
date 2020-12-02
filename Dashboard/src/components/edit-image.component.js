@@ -1,138 +1,110 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+
+const token = localStorage.getItem("token")
+axios.defaults.headers.common = {'Authorization' : `Bearer ${token}`}
+
+const imageStyle = {
+  width: 250,
+  height: 200
+};
 
 export default class EditExercise extends Component {
     constructor(props) {
         super(props);
-        this.onChangeUsername = this.onChangeUsername.bind(this);
-        this.onChangeDescription = this.onChangeDescription.bind(this);
-        this.onChangeDuration = this.onChangeDuration.bind(this);
-        this.onChangeDate = this.onChangeDate.bind(this);
+        this.onChangeClassification = this.onChangeClassification.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
 
         this.state = {
-            username: '',
-            description: 'text',
-            duration: 0,
-            date: new Date(),
-            users: []
+            imgID : '',
+            imageURL: '',
+            classification: '',
+            currentClassification: '',
+            report: 'text',
+            reports: [],
+            types: []
         }
     }
 
     componentDidMount() {
-      axios.get('http://localhost:5000/exercises/'+this.props.match.params.id)
+      axios.get('http://localhost:5000/images/'+this.props.match.params.id)
         .then(response =>{
             this.setState({
-                username: response.data.username,
-                description: response.data.description,
-                duration: response.data.duration,
-                date: new Date(response.data.date)
+                imageURL: response.data.imageURL,
+                currentClassification: response.data.classification,
             })
         })
-
-      axios.get('http://localhost:5000/users/')
+      
+      axios.get('http://localhost:5000/reports/')
         .then(response => {
           this.setState({
-            users: response.data.map(user => user.username),
-            username: response.data[0].username
+            reports: response.data
           })
+        })
+
+        this.setState({
+          types: ['Chatarra Nacional Primera', 
+                  'Chicharrón Nacional', 
+                  'Placa y Estructura Nacional', 
+                  'Rebaba de Acero', 
+                  'Regreso Industrial Galvanizado Nacional', 
+                  'Mixto Cizallado',
+                  'Mixto Para Procesar']
         })
     }
 
-    onChangeUsername(e) {
+    onChangeClassification(e) {
         this.setState({
-            username: e.target.value
-        });
-    }
-
-    onChangeDescription(e) {
-        this.setState({
-            description: e.target.value
-        });
-    }
-
-    onChangeDuration(e) {
-        this.setState({
-            duration: e.target.value
-        });
-    }
-
-    onChangeDate(date) {
-        this.setState({
-            date: date
+            classification: e.target.value
         });
     }
 
     onSubmit(e) {
         e.preventDefault();
-        const exercise = {
-            username: this.state.username,
-            description: this.state.description,
-            duration: this.state.duration,
-            date: this.state.date
+        const image = {
+            imageURL: this.state.imageURL,
+            classification: this.state.classification,
         }
-        console.log(exercise);
+        console.log(image);
 
-        axios.post('http://localhost:5000/exercises/update'+this.props.match.params.id, exercise)
+        axios.post('http://localhost:5000/images/update/'+this.props.match.params.id, image)
           .then(res => console.log(res.data));
 
-        window.location = '/';
+        window.location = '/imagenes';
     }
 
     render() {
         return (
         <div>
-          <h3>Edit Exercise Log</h3>
+          <h3>Edit Image</h3>
           <form onSubmit={this.onSubmit}>
+            <div>
+              <img style={imageStyle} src={this.state.imageURL} />
+            </div>
             <div className="form-group"> 
-              <label>Username: </label>
+              <label>Clasificación: </label>
               <select ref="userInput"
                   required
                   className="form-control"
-                  value={this.state.username}
-                  onChange={this.onChangeUsername}>
+                  value={this.state.classification}
+                  onChange={this.onChangeClassification}>
                   {
-                    this.state.users.map(function(user) {
+                    this.state.types.map(function(classification) {
                       return <option 
-                        key={user}
-                        value={user}>{user}
+                        key={classification}
+                        value={classification}>{classification}
                         </option>;
                     })
                   }
               </select>
             </div>
             <div className="form-group"> 
-              <label>Description: </label>
-              <input  type="text"
-                  required
-                  className="form-control"
-                  value={this.state.description}
-                  onChange={this.onChangeDescription}
-                  />
-            </div>
-            <div className="form-group">
-              <label>Duration (in minutes): </label>
-              <input 
-                  type="text" 
-                  className="form-control"
-                  value={this.state.duration}
-                  onChange={this.onChangeDuration}
-                  />
-            </div>
-            <div className="form-group">
-              <label>Date: </label>
-              <div>
-                <DatePicker
-                  selected={this.state.date}
-                  onChange={this.onChangeDate}
-                />
-              </div>
+              <label>Actual: {this.state.currentClassification}</label>
             </div>
     
             <div className="form-group">
-              <input type="submit" value="Edit Exercise Log" className="btn btn-primary" />
+              <input type="submit" value="Edit Image" className="btn btn-primary" />
             </div>
           </form>
         </div>
